@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Tile {
 
@@ -7,12 +8,42 @@ public class Tile {
 
 	TileType type = TileType.Empty;
 
+	Action<Tile> cbTileTypeChanged;
+
+
+	public TileType Type {
+		get {
+			return type;
+		}
+		set {
+			TileType oldType = type;
+			type = value;
+			//call the callback and let things know we've changed.
+
+			if(cbTileTypeChanged != null && oldType != type)
+				cbTileTypeChanged(this);
+		}
+	}
+
 	LooseObject looseObject;
 	InstalledObject installedObject;
 
 	World world;
 	int x;
+
+	public int X {
+		get {
+			return x;
+		}
+	}
+
 	int y;
+
+	public int Y {
+		get {
+			return y;
+		}
+	}
 
 	public Tile( World world, int x, int y ) {
 		this.world = world;
@@ -20,4 +51,14 @@ public class Tile {
 		this.y = y;
 
 	}
+
+	public void RegisterTileTypeChangedCallback(Action<Tile> callback) {
+		cbTileTypeChanged += callback;
+
+	}
+
+	public void UnRegisterTileTypeChangedCallback(Action<Tile> callback) {
+	cbTileTypeChanged -= callback;
+	}
+
 }
