@@ -51,6 +51,7 @@
      <Compile Include="Assets\Model\LooseObject.cs" />
      <Compile Include="Assets\Model\Tile.cs" />
      <Compile Include="Assets\Model\World.cs" />
+     <Compile Include="Assets\Utilities\SimplePool.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>G:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

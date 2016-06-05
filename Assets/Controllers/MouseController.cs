@@ -1,76 +1,122 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class MouseController : MonoBehaviour {
 
-
-
-	public GameObject circleCursor;
+	public GameObject circleCursorPrefab;
 
 	// créé une valeur lasrtFramePosition comme une coordonnée 3d position et direction
 	Vector3 lastFramePosition;
-
+	Vector3 currFramePosition;
 	//choppe le point qui sera mise en mémoire pour le drag and drop
 	Vector3 dragStartPosition;
+	//on créé une liste de gameobjects qui s'appelle dragpreviewmescouilles
+	List<GameObject> dragPreviewGameObjects;
 
 	// Use this for initialization
 	void Start () {
-	
-	}
+		dragPreviewGameObjects = new List<GameObject> ();
+	}	
 	
 	// Update is called once per frame
 	void Update () {
-
 		//Camera.main pécho la caméra qui est tagged MainCamera
 		//ScreenToWorldPoint transforme un point sur le screen en point to the world
-		Vector3 currFramePosition = Camera.main.ScreenToWorldPoint( Input.mousePosition );
+		currFramePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		//c'est de la 2d, on veut pas gérer de z position
 		currFramePosition.z = 0;
-	
+
+		//UpdateCursor ();
+		UpdateDragging ();
+		UpdateCameraMovement ();
+
+		//on veut la position de la souris sur la frame actuelle
+		//on utilise pas currentframeposition, parce que on peut avoir bougé la caméra !
+		lastFramePosition = Camera.main.ScreenToWorldPoint (Input.mousePosition);
+		lastFramePosition.z = 0;
+
+	}
+
+/*	void UpdateCursor() {
 
 		//update the circle cursor position
-		Tile tileUnderMouse = GetTileAtWorldCoord(currFramePosition);
+		Tile tileUnderMouse = WorldController.Instance.GetTileAtWorldCoord (currFramePosition);
 		if (tileUnderMouse != null) {
 			circleCursor.SetActive (true);
 			Vector3 cursorPosition = new Vector3 (tileUnderMouse.X, tileUnderMouse.Y, 0);
 			circleCursor.transform.position = cursorPosition;
-		} 
-		else {
+		} else {
 			//on désactive circlecursor si le mouse est au dessus d'un tile null
 			circleCursor.SetActive (false);
 		}
+	}
+	*/
 
+	void UpdateDragging() {
+		
 		//Start drag
-		if (Input.GetMouseButtonDown (0) ) {
+		//down, ça veut dire que on a cliqué sur les frames précédentes
+		if (Input.GetMouseButtonDown (0)) {
 			dragStartPosition = currFramePosition;
-
 		}
 
+		int start_x = Mathf.FloorToInt (dragStartPosition.x);
+		int end_x = Mathf.FloorToInt (currFramePosition.x);
+		int start_y = Mathf.FloorToInt (dragStartPosition.y);
+		int end_y = Mathf.FloorToInt (currFramePosition.y);
+
+		// on swappe si en drag & drop vers la gauche la "mauvaise" direction
+		//perso je trouve ça sale
+
+		if (end_x < start_x) {
+			int tmp = end_x;
+			end_x = start_x;
+			start_x = tmp;
+		}
+		if (end_y < start_y) {
+			int tmp = end_y;
+			end_y = start_y;
+			start_y = tmp;
+		}
+
+		//clean up old drag previews
+		//tant que y'a un gameobject dans dragpreviewmescouilles, (si y'en a un avec l'entree [0] ) tu l'enlève et le delete
+		while(dragPreviewGameObjects.Count > 0) {
+			GameObject go = dragPreviewGameObjects[0];
+			dragPreviewGameObjects.RemoveAt(0);
+			//au lieu de le delete, on va le despawn du simplepool, comme ça ça évite de créer détruire à mort plein d'éléments
+			//ça fait économiser des ressources
+			SimplePool.Despawn (go);
+		}
+
+		//juste le getmousedbutton, ça veut dire qu'on viens JUSTE de clique, sur CETTE frame
+		if (Input.GetMouseButton (0)) {
+			//display a preview of the drag area
+			for (int x = start_x; x <= end_x; x++) {
+				for (int y = start_y; y <= end_y; y++) {
+					Tile t = WorldController.Instance.World.GetTileAt (x, y);
+					if (t != null) {
+						//display the building hint on top of this tile positon
+						//Quaternion.identity c'est pour créer un vector sans rotation
+						// on créé un gameobject qui s'appelle go, et on l'ajoute (add) a la liste de gameobject dragpreviewmescouilles
+						//et on le créé avec le script en CC simplepool
+						GameObject go = SimplePool.Spawn( circleCursorPrefab, new Vector3(x, y, 0), Quaternion.identity );
+
+						//ça permet juste de faire en sorte que les novueaux objets go soient apparentés à mousecontroller
+						//c'est plus propre dans la hierarchy des objets créés
+						go.transform.SetParent (this.transform, true);
+
+						dragPreviewGameObjects.Add (go);
+					}
+				}
+			}
+		}
+
+
 		//end drag (drop)
-		if ( Input.GetMouseButtonUp(0) ) {
-			int start_x = Mathf.FloorToInt (dragStartPosition.x );
-			int end_x = Mathf.FloorToInt (currFramePosition.x );
+		if (Input.GetMouseButtonUp (0)) {
 
-			// on swappe si en drag & drop vers la gauche
-			if (end_x < start_x) {
-				int tmp = end_x;
-				end_x = start_x;
-				start_x = tmp;
-
-			}
-
-			int start_y = Mathf.FloorToInt (dragStartPosition.y );
-			int end_y = Mathf.FloorToInt (currFramePosition.y );
-		
-
-			// on swappe si en drag & drop vers la gauche
-			if (end_y < start_y) {
-				int tmp = end_y;
-				end_y = start_y;
-				start_y = tmp;
-
-			}
-
+			//go on loope through all the tiles
 			for (int x = start_x; x <= end_x; x++) {
 				for (int y = start_y; y <= end_y; y++) {
 					Tile t = WorldController.Instance.World.GetTileAt (x, y);
@@ -78,47 +124,25 @@ public class MouseController : MonoBehaviour {
 						t.Type = Tile.TileType.Floor;
 					}
 				}
-
-		
 			}
-
 		}
+	}
 
-		//Handle screen dragging on right or middle mouse button
+		void UpdateCameraMovement() {
+
+		//Handle screen panning on right or middle mouse button
 		if (Input.GetMouseButton (1) || Input.GetMouseButton (2)) {
 			
 			//comme on est en void update, on peut savoir la différence entre la position du curseur
 			//sur la frame actuelle, et la frame précédente
 			Vector3 diff = lastFramePosition - currFramePosition;
 			//et on bouge la position de la caméra de cette valeur diff
-			Camera.main.transform.Translate( diff );
-
+			Camera.main.transform.Translate (diff);
 
 		}
+	}
 			
-		lastFramePosition = Camera.main.ScreenToWorldPoint( Input.mousePosition );
-		lastFramePosition.z = 0;
+		//lastFramePosition = Camera.main.ScreenToWorldPoint( Input.mousePosition );
+		//lastFramePosition.z = 0;
 
-	}
-
-	//on détermine quel tile est à quelle coordonnée du monde, ce qui est facile
-	//car leur nom correspond directement à leur coordonnée, par exemple Tile_5_5 a pour coord x 5 y 5 (z 0)
-	Tile GetTileAtWorldCoord(Vector3 coord){
-		//Mathf.FloorToInt converti un float en int
-		//Comme ça si notre curseur est à 5.125165 de coord x, on aura 5 x
-		int x = Mathf.FloorToInt(coord.x);
-		int y = Mathf.FloorToInt(coord.y);
-
-		// pécho le premier gameobject dans la hiérarchie de type WOrldController
-		//GameObject.FindObjectOfType<WorldController>();
-		//mais on fait autre chose
-
-		//on va chopper l'instance worldController, on l'a appellé comme ça et rendu static 
-		//et le world tile data qu'on a créé qui s'appelle world
-		//gettileat c'est une class créée dans world
-
-
-		return WorldController.Instance.World.GetTileAt(x, y);
-	}
 }
-

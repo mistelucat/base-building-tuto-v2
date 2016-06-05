@@ -74,5 +74,22 @@ public class WorldController : MonoBehaviour {
 
 	}
 
+
+	//on détermine quel tile est à quelle coordonnée du monde, ce qui est facile
+	//car leur nom correspond directement à leur coordonnée, par exemple Tile_5_5 a pour coord x 5 y 5 (z 0)
+	public Tile GetTileAtWorldCoord(Vector3 coord){
+		//Mathf.FloorToInt converti un float en int
+		//Comme ça si notre curseur est à 5.125165 de coord x, on aura 5 x
+		int x = Mathf.FloorToInt(coord.x);
+		int y = Mathf.FloorToInt(coord.y);
+
+		//on va chopper l'instance worldController, on l'a appellé comme ça et rendu static 
+		//et le world tile data qu'on a créé qui s'appelle world
+		//gettileat c'est une class créée dans world
+
+
+		return World.GetTileAt(x, y);
+	}
+
 }
 	
