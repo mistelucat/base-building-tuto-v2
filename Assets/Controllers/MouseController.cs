@@ -140,6 +140,11 @@ public class MouseController : MonoBehaviour {
 			Camera.main.transform.Translate (diff);
 
 		}
+		//on permet de zoomer avec la molette de la souris !!
+		Camera.main.orthographicSize -= Camera.main.orthographicSize * Input.GetAxis("Mouse ScrollWheel");
+		//on limite le zoom max et min en faisant un clamp   
+		// Mathf.Clamp, on Clamps a value between a minimum float and maximum float value.
+		Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 3f, 50f);
 	}
 			
 		//lastFramePosition = Camera.main.ScreenToWorldPoint( Input.mousePosition );
