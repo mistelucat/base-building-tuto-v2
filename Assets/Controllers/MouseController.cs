@@ -1,9 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+using UnityEditor.Events;
+//using UnityEditor.UI;
 
 public class MouseController : MonoBehaviour {
 
 	public GameObject circleCursorPrefab;
+
+
+	bool buildModeIsObjects = false;
+	TileType buildModeTile = TileType.Floor;
+	string buildModeObjectType;
 
 	// créé une valeur lasrtFramePosition comme une coordonnée 3d position et direction
 	Vector3 lastFramePosition;
@@ -53,6 +61,11 @@ public class MouseController : MonoBehaviour {
 	*/
 
 	void UpdateDragging() {
+		//if we are over a UI element, bail out !!
+		if (EventSystem.current.IsPointerOverGameObject ()) {
+			return;
+		}
+
 		
 		//Start drag
 		//down, ça veut dire que on a cliqué sur les frames précédentes
@@ -120,8 +133,22 @@ public class MouseController : MonoBehaviour {
 			for (int x = start_x; x <= end_x; x++) {
 				for (int y = start_y; y <= end_y; y++) {
 					Tile t = WorldController.Instance.World.GetTileAt (x, y);
-					if (t != null) {
-						t.Type = Tile.TileType.Floor;
+
+
+					if(t != null) {
+						if (buildModeIsObjects == true) {
+							//create the InstalledObject and assigh it to the tile
+
+							//FIXME Right now were just going to assume walls
+							//WorldController.Instance.World.PlaceInstalledObject( buildModeObjectType, t );
+
+
+
+						} 
+						else {
+							//we are in thile-changing mode
+							t.Type = buildModeTile;
+						}
 					}
 				}
 			}
@@ -149,5 +176,21 @@ public class MouseController : MonoBehaviour {
 			
 		//lastFramePosition = Camera.main.ScreenToWorldPoint( Input.mousePosition );
 		//lastFramePosition.z = 0;
+
+	public void SetMode_BuildFloor( ) {
+		buildModeIsObjects = false;
+		buildModeTile = TileType.Floor;
+	}
+	public void SetMode_Bulldoze( ) {
+		buildModeIsObjects = false;
+		buildModeTile = TileType.Empty;
+	}
+
+	public void SetMode_BuidInstalledObject( string objectType ) {
+		//wall pas a tile mais un installedobject qui est au dessus du tile
+		buildModeIsObjects = true;
+		buildModeObjectType = objectType;
+	}
+
 
 }

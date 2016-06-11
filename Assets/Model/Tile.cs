@@ -2,24 +2,21 @@
 using System.Collections;
 using System;
 
+
+
+//TileType is the base type to the tile.
+public enum TileType { Empty, Floor };
+
 public class Tile {
-
-	public enum TileType { Empty, Floor };
-
-	TileType type = TileType.Empty;
-
-	Action<Tile> cbTileTypeChanged;
-
-
+	private TileType _type = TileType.Empty;
 	public TileType Type {
-		get {
-			return type;
-		}
+		get { return _type; }
 		set {
-			TileType oldType = type;
-			type = value;
+			TileType oldType = _type;
+			_type = value;
+
 			//call the callback and let things know we've changed.
-			if(cbTileTypeChanged != null && oldType != type)
+			if(cbTileTypeChanged != null && oldType != _type)
 				cbTileTypeChanged(this);
 		}
 	}
@@ -28,36 +25,60 @@ public class Tile {
 	InstalledObject installedObject;
 
 	World world;
-	int x;
+	public int X { get; protected set; }
+	public int Y { get; protected set; }
 
-	public int X {
-		get {
-			return x;
-		}
-	}
+	//la fonction qu'on appelle à chaque fois que notre type change !
+	//cb=callback the function we callback anytime our type changes
+	//c'est super puissant mec, action instance ? similaire void method
+	Action<Tile> cbTileTypeChanged;
 
-	int y;
-
-	public int Y {
-		get {
-			return y;
-		}
-	}
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Tile"/> class.
+	/// </summary>
+	/// <param name="world">World.</param>
+	/// <param name="x">The x coordinate.</param>
+	/// <param name="y">The y coordinate.</param>
 
 	public Tile( World world, int x, int y ) {
 		this.world = world;
-		this.x = x;
-		this.y = y;
+		this.X = x;
+		this.Y = y;
 
 	}
-
+	/// <summary>
+	/// Registers the tile type changed callback.
+	/// </summary>
+	/// <param name="callback">Callback.</param>
 	public void RegisterTileTypeChangedCallback(Action<Tile> callback) {
 		cbTileTypeChanged += callback;
 
 	}
-
+	/// <summary>
+	/// Uns the register tile type changed callback.
+	/// </summary>
+	/// <param name="callback">Callback.</param>
 	public void UnRegisterTileTypeChangedCallback(Action<Tile> callback) {
 	cbTileTypeChanged -= callback;
+	}
+
+	public bool PlaceObject(InstalledObject objectInstance) {
+		if (objectInstance == null) {
+			//we are uninstalling whatever was here before
+			installedObject = null;
+			return true;
+		}
+
+		//objIsntance isn't null
+		if (installedObject != null) {
+			Debug.LogError ("trying to assigh an installed object to a tile that already has one !!");
+			return false;
+		}
+
+		//at this point, everything's fine !
+
+		installedObject = objectInstance;
+		return true;
 	}
 
 }
