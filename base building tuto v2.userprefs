@@ -1,12 +1,13 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Controllers\WorldController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Model\Inventory.cs">
     <Files>
-      <File FileName="Assets\Model\World.cs" Line="38" Column="73" />
+      <File FileName="Assets\Model\Furniture.cs" Line="89" Column="62" />
+      <File FileName="Assets\Model\World.cs" Line="38" Column="67" />
       <File FileName="Assets\Controllers\MouseController.cs" Line="139" Column="40" />
-      <File FileName="Assets\Controllers\WorldController.cs" Line="205" Column="68" />
-      <File FileName="Assets\Model\InstalledObject.cs" Line="18" Column="50" />
-      <File FileName="Assets\Model\Tile.cs" Line="23" Column="2" />
+      <File FileName="Assets\Controllers\WorldController.cs" Line="69" Column="43" />
+      <File FileName="Assets\Model\Tile.cs" Line="24" Column="22" />
+      <File FileName="Assets\Model\Inventory.cs" Line="8" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

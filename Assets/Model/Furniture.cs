@@ -4,13 +4,13 @@ using System;
 
 //installedObjectsd are thiunhgds like walls doors anf furnitures
 
-public class InstalledObject {
+public class Furniture {
 	
 	//this reperesents the BASE tile of the object, but in practice, large objects may actually occupy multiple tiles
 
 	public Tile tile { get; protected set; }
 
-	//contrairement a tile, on prédéfini pas tous les types d'installedobjects par un enum
+	//contrairement a tile, on prédéfini pas tous les types de furniture par un enum
 	//du coup on définis juste son objectType comme étant un string (bha WAISSS)
 	public string  objectType { get; protected set; }
 
@@ -27,18 +27,18 @@ public class InstalledObject {
 
 	public bool linksToNeighbour{ get; protected set; }
 
-	Action<InstalledObject> cbOnChanged;
+	Action<Furniture> cbOnChanged;
 
 	// TODO : implement larger objects
 	// TODO implement object roation
 
-	protected InstalledObject(){
+	protected Furniture(){
 		
 	}
 
 
-	static public InstalledObject CreatePrototype( string objectType, float movementCost = 1f, int width=1, int height=1, bool linksToNeighbour=false ) {
-		InstalledObject obj = new InstalledObject ();
+	static public Furniture CreatePrototype( string objectType, float movementCost = 1f, int width=1, int height=1, bool linksToNeighbour=false ) {
+		Furniture obj = new Furniture ();
 
 		obj.objectType = objectType;
 		obj.movementCost = movementCost;
@@ -49,8 +49,8 @@ public class InstalledObject {
 		return obj;
 	}
 
-	static public InstalledObject PlaceInstance( InstalledObject proto, Tile tile ) {
-		InstalledObject obj = new InstalledObject ();
+	static public Furniture PlaceInstance( Furniture proto, Tile tile ) {
+		Furniture obj = new Furniture ();
 
 		obj.objectType = proto.objectType;
 		obj.movementCost = proto.movementCost;
@@ -61,7 +61,7 @@ public class InstalledObject {
 		obj.tile = tile;
 
 		//FIXME: this assume we are 1x1 !!
-		if( tile.PlaceObject(obj) == false ) {
+		if( tile.PlaceFurniture(obj) == false ) {
 			//for some reason we weren't able to place our oublject in this tile
 			//probably it was already occupied
 
@@ -71,14 +71,44 @@ public class InstalledObject {
 
 		}
 
+		if (obj.linksToNeighbour) {
+			//this type of furniture links itself to its neighbours,
+			//so we should inform our neighbours that they have a new buddy
+			//just trigger their OnChangedCallback
+
+			Tile t;
+			int x = tile.X;
+			int y = tile.Y;
+
+			t = tile.world.GetTileAt(x, y + 1);
+			if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
+				//we have a northern neighbour with the same object type as us, so tell it that it has changed by firing its callback
+				t.furniture.cbOnChanged (t.furniture);
+			}	
+			t = tile.world.GetTileAt(x+1, y);
+			if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
+				t.furniture.cbOnChanged (t.furniture);
+			}
+			t = tile.world.GetTileAt(x, y - 1);
+			if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
+				t.furniture.cbOnChanged (t.furniture);
+			}
+			t = tile.world.GetTileAt(x-1, y);
+			if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
+				t.furniture.cbOnChanged (t.furniture);
+			}
+
+
+		}
+
 		return obj;
 	}
 
-	public void RegisterOnChangedCallback(Action<InstalledObject> callbackFunc){
+	public void RegisterOnChangedCallback(Action<Furniture> callbackFunc){
 		cbOnChanged += callbackFunc;
 	}
 
-	public void UnregisterOnCHangeCallback(Action<InstalledObject> callbackFunc){
+	public void UnregisterOnCHangeCallback(Action<Furniture> callbackFunc){
 		cbOnChanged -= callbackFunc;
 	}
 

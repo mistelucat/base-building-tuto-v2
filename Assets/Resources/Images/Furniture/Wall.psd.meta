@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 7d708f56f2cab5b4fafedca6417c619c
-timeCreated: 1465750260
+timeCreated: 1465760457
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -10,6 +10,16 @@ TextureImporter:
     21300006: Wall_S
     21300008: Wall_N
     21300010: Wall_NES
+    21300012: Wall_ESW
+    21300014: Wall_SW
+    21300016: Wall_NW
+    21300018: Wall_NE
+    21300020: Wall_EW
+    21300022: Wall_NS
+    21300024: Wall_NSW
+    21300026: Wall_NEW
+    21300028: Wall_NESW
+    21300030: Wall_W
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -116,6 +126,116 @@ TextureImporter:
         serializedVersion: 2
         x: 80
         y: 120
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_ESW
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 20
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_SW
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 100
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_NW
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 60
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_NE
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 60
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_EW
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 100
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_NS
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 80
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_NSW
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 120
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_NEW
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 60
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_NESW
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 120
+        width: 20
+        height: 20
+      alignment: 6
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+    - name: Wall_W
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 60
         width: 20
         height: 20
       alignment: 6

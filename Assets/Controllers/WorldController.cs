@@ -18,8 +18,8 @@ public class WorldController : MonoBehaviour {
 
 
 	Dictionary<Tile, GameObject> tileGameObjectMap;
-	Dictionary<InstalledObject, GameObject> installedObjectGameObjectMap;
-	Dictionary<string, Sprite> installedObjectSprites;
+	Dictionary<Furniture, GameObject> furnitureGameObjectMap;
+	Dictionary<string, Sprite> furnitureSprites;
 
 	//world et tile data qui peut être acess, mais pas modifie
 	public World World { get; protected set; }
@@ -28,14 +28,7 @@ public class WorldController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		installedObjectSprites = new Dictionary <string, Sprite>();
-		//permet d'aller pécho directement dans le répertoire spécial "resources" de unity, qui se loade automatiquement dans le projet
-		Sprite[] sprites = Resources.LoadAll<Sprite>("Images/InstalledObjects/");
-
-		foreach (Sprite s in sprites) {
-			installedObjectSprites [s.name] = s;
-		}
-
+		LoadSprites ();
 
 		if (Instance != null) {
 			Debug.LogError ("there shound never ne two world controllers dude.");
@@ -45,13 +38,13 @@ public class WorldController : MonoBehaviour {
 	//créé le monde vide empty tiles
 		World = new World ();
 
-		World.RegisterInstalledObjectCreated (OnInstalledObjectCreated);
+		World.RegisterInstalledObjectCreated (OnFurnitureCreated);
 
 
 
 		// Instantiate our dictionnaray that tracks which GamObject is rendering which Tile data
 		tileGameObjectMap = new Dictionary<Tile, GameObject>();
-		installedObjectGameObjectMap = new Dictionary<InstalledObject, GameObject>();
+		furnitureGameObjectMap = new Dictionary<Furniture, GameObject>();
 
 
 		//create a GameObject for each of our tiles, so they show visually.
@@ -84,7 +77,19 @@ public class WorldController : MonoBehaviour {
 		World.RandomizeTiles();
 	}
 		
+	void LoadSprites(){
 
+		furnitureSprites = new Dictionary <string, Sprite>();
+		//permet d'aller pécho directement dans le répertoire spécial "resources" de unity, qui se loade automatiquement dans le projet
+		Sprite[] sprites = Resources.LoadAll<Sprite>("Images/Furniture/");
+
+		Debug.Log ("LOADED RESOURCE:");
+		foreach (Sprite s in sprites) {
+			Debug.Log(s);
+			furnitureSprites [s.name] = s;
+		}
+
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -157,32 +162,45 @@ public class WorldController : MonoBehaviour {
 		return World.GetTileAt(x, y);
 	}
 
-	public void OnInstalledObjectCreated( InstalledObject obj ) {
-		//Debug.Log ("OnInstalledObjectCreated");
+	public void OnFurnitureCreated( Furniture furn ) {
 		//creater a visueal GameObject linked ti this data
 
 		//FIXME does not consider multitile objects nor ratated objects
 
-		GameObject obj_go = new GameObject(); 
+		GameObject furn_go = new GameObject(); 
 
-		installedObjectGameObjectMap.Add (obj, obj_go );
+		furnitureGameObjectMap.Add (furn, furn_go );
 
-		obj_go.name = obj.objectType + "_" + obj.tile.X + "_" + obj.tile.Y;
-		obj_go.transform.position = new Vector3( obj.tile.X, obj.tile.Y, 0);
-		obj_go.transform.SetParent(this.transform, true);
+		furn_go.name = furn.objectType + "_" + furn.tile.X + "_" + furn.tile.Y;
+		furn_go.transform.position = new Vector3( furn.tile.X, furn.tile.Y, 0);
+		furn_go.transform.SetParent(this.transform, true);
 
 		//FIXME We assume taht the object must ve awall, so use the hardcoded reference to the wall sprite
-		obj_go.AddComponent<SpriteRenderer>().sprite = GetSpriteForInstalledObject(obj);
+		furn_go.AddComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);
 
 
 		//register our callback so that GameObject gets updated whenever the object's type changes
-		obj.RegisterOnChangedCallback( OnInstalledObjectChanged );
+		furn.RegisterOnChangedCallback( OnFurnitureChanged );
 	 
 	}
 
-	Sprite GetSpriteForInstalledObject(InstalledObject obj) {
+	void OnFurnitureChanged( Furniture furn ) {
+		//Debug.LogError("OnFurnitureChanged -- NOT IMPLEMENTED !");
+		// make sure the furniture graphics are correct
+
+		if (furnitureGameObjectMap.ContainsKey(furn) == false) {
+			Debug.LogError("OnFurnitureChanged -- trying to change visual for furniture not in our map");
+			return;
+		}
+		GameObject furn_go = furnitureGameObjectMap[furn];
+		furn_go.GetComponent<SpriteRenderer>().sprite = GetSpriteForFurniture(furn);
+	}
+
+
+
+	Sprite GetSpriteForFurniture(Furniture obj) {
 		if (obj.linksToNeighbour == false) {
-			return installedObjectSprites [obj.objectType];
+			return furnitureSprites [obj.objectType];
 		}
 
 		//otherwise, the sprite name is more complicated
@@ -194,38 +212,34 @@ public class WorldController : MonoBehaviour {
 		Tile t;
 
 		t = World.GetTileAt(x, y + 1);
-		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+		if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
 			spriteName += "N";
 		}	
 		t = World.GetTileAt(x+1, y);
-		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+		if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
 			spriteName += "E";
 		}
 		t = World.GetTileAt(x, y - 1);
-		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+		if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
 			spriteName += "S";
 		}
 		t = World.GetTileAt(x-1, y);
-		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+		if(t != null && t.furniture != null && t.furniture.objectType == obj.objectType){
 			spriteName += "W";
 		}
 
 		//on fait un mesage d'erreur si il y a des tiles manquants
-		if (installedObjectSprites.ContainsKey (spriteName) == false) {
-			Debug.LogError ("GetSpriteForInstalledObject -- no sprites withe name: " + spriteName);
+		if (furnitureSprites.ContainsKey (spriteName) == false) {
+			Debug.LogError ("GetSpriteForFurniture -- no sprites withe name: " + spriteName);
 			return null;
 		}
 
 		//for example if this object has all four neightbourgds of the same ttype,
 		//then the string will look like Wall_NESW
 
-		return installedObjectSprites[spriteName];
+		return furnitureSprites[spriteName];
 	
 
-	}
-
-	void OnInstalledObjectChanged( InstalledObject obj ) {
-		Debug.LogError("OnInstalledObjectChanged -- NOT IMPLEMENTED !");
 	}
 }
 	
