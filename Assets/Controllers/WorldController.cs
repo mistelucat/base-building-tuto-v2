@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 
 public class WorldController : MonoBehaviour {
+
+
 	
 	//un static, c'est un truc commun à toute la classe worldcontroller 
 	//pas seulement à tel ou tel objet worldcontroller
@@ -12,9 +14,12 @@ public class WorldController : MonoBehaviour {
 	//on fait un getter,comme ça Instance peut pas être modifié
 	public static WorldController Instance { get; protected set; }
 
-	public Sprite floorSprite;
+	public Sprite floorSprite; //FIXME
 
-	Dictionary<Tile, GameObject> tileGameobjectMap;
+
+	Dictionary<Tile, GameObject> tileGameObjectMap;
+	Dictionary<InstalledObject, GameObject> installedObjectGameObjectMap;
+	Dictionary<string, Sprite> installedObjectSprites;
 
 	//world et tile data qui peut être acess, mais pas modifie
 	public World World { get; protected set; }
@@ -22,6 +27,16 @@ public class WorldController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+		installedObjectSprites = new Dictionary <string, Sprite>();
+		//permet d'aller pécho directement dans le répertoire spécial "resources" de unity, qui se loade automatiquement dans le projet
+		Sprite[] sprites = Resources.LoadAll<Sprite>("Images/InstalledObjects/");
+
+		foreach (Sprite s in sprites) {
+			installedObjectSprites [s.name] = s;
+		}
+
+
 		if (Instance != null) {
 			Debug.LogError ("there shound never ne two world controllers dude.");
 		}
@@ -30,8 +45,13 @@ public class WorldController : MonoBehaviour {
 	//créé le monde vide empty tiles
 		World = new World ();
 
+		World.RegisterInstalledObjectCreated (OnInstalledObjectCreated);
+
+
+
 		// Instantiate our dictionnaray that tracks which GamObject is rendering which Tile data
-		tileGameobjectMap = new Dictionary<Tile, GameObject>();
+		tileGameObjectMap = new Dictionary<Tile, GameObject>();
+		installedObjectGameObjectMap = new Dictionary<InstalledObject, GameObject>();
 
 
 		//create a GameObject for each of our tiles, so they show visually.
@@ -44,9 +64,7 @@ public class WorldController : MonoBehaviour {
 				GameObject tile_go = new GameObject (); 
 
 				// Add our tile/GO pair tot he dictionnary
-				tileGameobjectMap.Add (tile_data, tile_go);
-
-
+				tileGameObjectMap.Add (tile_data, tile_go);
 
 				tile_go.name = "Tile_" + x + "_" + y;
 				tile_go.transform.position = new Vector3( tile_data.X, tile_data.Y, 0);
@@ -78,11 +96,11 @@ public class WorldController : MonoBehaviour {
 		//pourrait être utililisé quand on change floors/levels
 		//ondoit détruire tous les visuels GameObjects mais pas le tile data !
 
-		while (tileGameobjectMap.Count > 0) {
-			Tile tile_data = tileGameobjectMap.Keys.First ();
-			GameObject tile_go = tileGameobjectMap [tile_data];
+		while (tileGameObjectMap.Count > 0) {
+			Tile tile_data = tileGameObjectMap.Keys.First ();
+			GameObject tile_go = tileGameObjectMap [tile_data];
 			//remove the mair from the map
-			tileGameobjectMap.Remove(tile_data);
+			tileGameObjectMap.Remove(tile_data);
 			//unregister the callback !
 			tile_data.UnRegisterTileTypeChangedCallback( OnTileTypeChanged );
 			// et enfin destroy the visual GameObject
@@ -99,12 +117,12 @@ public class WorldController : MonoBehaviour {
 	void OnTileTypeChanged(Tile tile_data ) {
 
 		//on fait un check si y'a pas de key au [tile_data]
-		if (tileGameobjectMap.ContainsKey (tile_data) == false) {
+		if (tileGameObjectMap.ContainsKey (tile_data) == false) {
 			Debug.LogError ("tileGameObjectMap doesn't contain the tile_data -- did you forget to add the tile to the dictionnary ? or maybe to forget to unregister a callback ?");
 			return;
 		}
 
-		GameObject tile_go = tileGameobjectMap[tile_data];
+		GameObject tile_go = tileGameObjectMap[tile_data];
 
 		//on fait un check si GameObject est pas null
 		if (tile_go == null) {
@@ -139,5 +157,75 @@ public class WorldController : MonoBehaviour {
 		return World.GetTileAt(x, y);
 	}
 
+	public void OnInstalledObjectCreated( InstalledObject obj ) {
+		//Debug.Log ("OnInstalledObjectCreated");
+		//creater a visueal GameObject linked ti this data
+
+		//FIXME does not consider multitile objects nor ratated objects
+
+		GameObject obj_go = new GameObject(); 
+
+		installedObjectGameObjectMap.Add (obj, obj_go );
+
+		obj_go.name = obj.objectType + "_" + obj.tile.X + "_" + obj.tile.Y;
+		obj_go.transform.position = new Vector3( obj.tile.X, obj.tile.Y, 0);
+		obj_go.transform.SetParent(this.transform, true);
+
+		//FIXME We assume taht the object must ve awall, so use the hardcoded reference to the wall sprite
+		obj_go.AddComponent<SpriteRenderer>().sprite = GetSpriteForInstalledObject(obj);
+
+
+		//register our callback so that GameObject gets updated whenever the object's type changes
+		obj.RegisterOnChangedCallback( OnInstalledObjectChanged );
+	 
+	}
+
+	Sprite GetSpriteForInstalledObject(InstalledObject obj) {
+		if (obj.linksToNeighbour == false) {
+			return installedObjectSprites [obj.objectType];
+		}
+
+		//otherwise, the sprite name is more complicated
+		string spriteName = obj.objectType + "_";
+
+		//check for neighbours North, east, South, West (clockwise)
+		int x = obj.tile.X;
+		int y = obj.tile.Y;
+		Tile t;
+
+		t = World.GetTileAt(x, y + 1);
+		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+			spriteName += "N";
+		}	
+		t = World.GetTileAt(x+1, y);
+		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+			spriteName += "E";
+		}
+		t = World.GetTileAt(x, y - 1);
+		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+			spriteName += "S";
+		}
+		t = World.GetTileAt(x-1, y);
+		if(t != null && t.installedObject != null && t.installedObject.objectType == obj.objectType){
+			spriteName += "W";
+		}
+
+		//on fait un mesage d'erreur si il y a des tiles manquants
+		if (installedObjectSprites.ContainsKey (spriteName) == false) {
+			Debug.LogError ("GetSpriteForInstalledObject -- no sprites withe name: " + spriteName);
+			return null;
+		}
+
+		//for example if this object has all four neightbourgds of the same ttype,
+		//then the string will look like Wall_NESW
+
+		return installedObjectSprites[spriteName];
+	
+
+	}
+
+	void OnInstalledObjectChanged( InstalledObject obj ) {
+		Debug.LogError("OnInstalledObjectChanged -- NOT IMPLEMENTED !");
+	}
 }
 	

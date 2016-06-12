@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 //installedObjectsd are thiunhgds like walls doors anf furnitures
 
 public class InstalledObject {
+	
+	//this reperesents the BASE tile of the object, but in practice, large objects may actually occupy multiple tiles
 
-	Tile tile; //this reperesents the BASE tile of the object, but in practice, large objects may actually occupy multiple tiles
+	public Tile tile { get; protected set; }
 
 	//contrairement a tile, on prédéfini pas tous les types d'installedobjects par un enum
 	//du coup on définis juste son objectType comme étant un string (bha WAISSS)
-	string  objectType;
+	public string  objectType { get; protected set; }
 
 	// c'est un multiplier de vitesse, donc 2 tu vas à moitié de vitesse (zarb)
 	// tile types and other environmental effects may be combined
@@ -22,6 +25,10 @@ public class InstalledObject {
 	int width;
 	int height;
 
+	public bool linksToNeighbour{ get; protected set; }
+
+	Action<InstalledObject> cbOnChanged;
+
 	// TODO : implement larger objects
 	// TODO implement object roation
 
@@ -30,13 +37,14 @@ public class InstalledObject {
 	}
 
 
-	static public InstalledObject CreatePrototype( string objectType, float movementCost = 1f, int width=1, int height=1 ) {
+	static public InstalledObject CreatePrototype( string objectType, float movementCost = 1f, int width=1, int height=1, bool linksToNeighbour=false ) {
 		InstalledObject obj = new InstalledObject ();
 
 		obj.objectType = objectType;
 		obj.movementCost = movementCost;
 		obj.width = width;
 		obj.height = height;
+		obj.linksToNeighbour = linksToNeighbour;
 
 		return obj;
 	}
@@ -48,6 +56,7 @@ public class InstalledObject {
 		obj.movementCost = proto.movementCost;
 		obj.width = proto.width;
 		obj.height = proto.height;
+		obj.linksToNeighbour = proto.linksToNeighbour;
 
 		obj.tile = tile;
 
@@ -65,5 +74,12 @@ public class InstalledObject {
 		return obj;
 	}
 
+	public void RegisterOnChangedCallback(Action<InstalledObject> callbackFunc){
+		cbOnChanged += callbackFunc;
+	}
+
+	public void UnregisterOnCHangeCallback(Action<InstalledObject> callbackFunc){
+		cbOnChanged -= callbackFunc;
+	}
 
 }

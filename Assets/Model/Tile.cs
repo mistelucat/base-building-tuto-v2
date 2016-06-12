@@ -22,7 +22,7 @@ public class Tile {
 	}
 
 	LooseObject looseObject;
-	InstalledObject installedObject;
+	public InstalledObject installedObject { get; protected set; }
 
 	World world;
 	public int X { get; protected set; }
