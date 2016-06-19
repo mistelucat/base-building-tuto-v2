@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 7d708f56f2cab5b4fafedca6417c619c
-timeCreated: 1465760457
+timeCreated: 1466292982
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -117,8 +117,8 @@ TextureImporter:
         y: 100
         width: 20
         height: 20
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      alignment: 6
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
     - name: Wall_NES

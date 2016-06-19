@@ -16,22 +16,25 @@ public class Tile {
 			_type = value;
 
 			//call the callback and let things know we've changed.
-			if(cbTileTypeChanged != null && oldType != _type)
-				cbTileTypeChanged(this);
+			if(cbTileChanged != null && oldType != _type)
+				cbTileChanged(this);
 		}
 	}
 
 	Inventory inventory;
 	public Furniture furniture { get; protected set; }
 
+	public Job PendingFurnitureJob;
+
+
 	public World world { get; protected set; }
 	public int X { get; protected set; }
 	public int Y { get; protected set; }
 
-	//la fonction qu'on appelle à chaque fois que notre type change !
-	//cb=callback the function we callback anytime our type changes
+	//la fonction qu'on appelle à chaque fois que notre data de tile change !
+	//cb=callback the function we callback anytime our tile data changes
 	//c'est super puissant mec, action instance ? similaire void method
-	Action<Tile> cbTileTypeChanged;
+	Action<Tile> cbTileChanged;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Tile"/> class.
@@ -51,7 +54,7 @@ public class Tile {
 	/// </summary>
 	/// <param name="callback">Callback.</param>
 	public void RegisterTileTypeChangedCallback(Action<Tile> callback) {
-		cbTileTypeChanged += callback;
+		cbTileChanged += callback;
 
 	}
 	/// <summary>
@@ -59,7 +62,7 @@ public class Tile {
 	/// </summary>
 	/// <param name="callback">Callback.</param>
 	public void UnRegisterTileTypeChangedCallback(Action<Tile> callback) {
-	cbTileTypeChanged -= callback;
+	cbTileChanged -= callback;
 	}
 
 	public bool PlaceFurniture(Furniture objInstance) {

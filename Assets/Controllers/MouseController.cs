@@ -9,10 +9,6 @@ public class MouseController : MonoBehaviour {
 	public GameObject circleCursorPrefab;
 
 
-	bool buildModeIsObjects = false;
-	TileType buildModeTile = TileType.Floor;
-	string buildModeObjectType;
-
 	// créé une valeur lasrtFramePosition comme une coordonnée 3d position et direction
 	Vector3 lastFramePosition;
 	Vector3 currFramePosition;
@@ -44,21 +40,6 @@ public class MouseController : MonoBehaviour {
 		lastFramePosition.z = 0;
 
 	}
-
-/*	void UpdateCursor() {
-
-		//update the circle cursor position
-		Tile tileUnderMouse = WorldController.Instance.GetTileAtWorldCoord (currFramePosition);
-		if (tileUnderMouse != null) {
-			circleCursor.SetActive (true);
-			Vector3 cursorPosition = new Vector3 (tileUnderMouse.X, tileUnderMouse.Y, 0);
-			circleCursor.transform.position = cursorPosition;
-		} else {
-			//on désactive circlecursor si le mouse est au dessus d'un tile null
-			circleCursor.SetActive (false);
-		}
-	}
-	*/
 
 	void UpdateDragging() {
 		//if we are over a UI element, bail out !!
@@ -107,7 +88,7 @@ public class MouseController : MonoBehaviour {
 			//display a preview of the drag area
 			for (int x = start_x; x <= end_x; x++) {
 				for (int y = start_y; y <= end_y; y++) {
-					Tile t = WorldController.Instance.World.GetTileAt (x, y);
+					Tile t = WorldController.Instance.world.GetTileAt (x, y);
 					if (t != null) {
 						//display the building hint on top of this tile positon
 						//Quaternion.identity c'est pour créer un vector sans rotation
@@ -129,31 +110,22 @@ public class MouseController : MonoBehaviour {
 		//end drag (drop)
 		if (Input.GetMouseButtonUp (0)) {
 
+			BuildModeController bmc = GameObject.FindObjectOfType<BuildModeController>();
+
 			//go on loope through all the tiles
 			for (int x = start_x; x <= end_x; x++) {
 				for (int y = start_y; y <= end_y; y++) {
-					Tile t = WorldController.Instance.World.GetTileAt (x, y);
-
+					Tile t = WorldController.Instance.world.GetTileAt (x, y);
 
 					if(t != null) {
-						if (buildModeIsObjects == true) {
-							//create the InstalledObject and assigh it to the tile
-
-							//FIXME Right now were just going to assume walls
-							WorldController.Instance.World.PlaceInstalledObject( buildModeObjectType, t );
-
-
-
-						} 
-						else {
-							//we are in thile-changing mode
-							t.Type = buildModeTile;
-						}
+						// call BuildMOdeController :: DoBuild()
+							bmc.DoBuild(t);
 					}
 				}
 			}
 		}
 	}
+
 
 		void UpdateCameraMovement() {
 
@@ -172,24 +144,6 @@ public class MouseController : MonoBehaviour {
 		//on limite le zoom max et min en faisant un clamp   
 		// Mathf.Clamp, on Clamps a value between a minimum float and maximum float value.
 		Camera.main.orthographicSize = Mathf.Clamp (Camera.main.orthographicSize, 3f, 50f);
-	}
-			
-		//lastFramePosition = Camera.main.ScreenToWorldPoint( Input.mousePosition );
-		//lastFramePosition.z = 0;
-
-	public void SetMode_BuildFloor( ) {
-		buildModeIsObjects = false;
-		buildModeTile = TileType.Floor;
-	}
-	public void SetMode_Bulldoze( ) {
-		buildModeIsObjects = false;
-		buildModeTile = TileType.Empty;
-	}
-
-	public void SetMode_BuidInstalledObject( string objectType ) {
-		//wall pas a tile mais un installedobject qui est au dessus du tile
-		buildModeIsObjects = true;
-		buildModeObjectType = objectType;
 	}
 
 

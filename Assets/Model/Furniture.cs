@@ -25,9 +25,12 @@ public class Furniture {
 	int width;
 	int height;
 
+
 	public bool linksToNeighbour{ get; protected set; }
 
 	Action<Furniture> cbOnChanged;
+
+	Func<Tile, bool> funcPositionValidation;
 
 	// TODO : implement larger objects
 	// TODO implement object roation
@@ -46,10 +49,19 @@ public class Furniture {
 		obj.height = height;
 		obj.linksToNeighbour = linksToNeighbour;
 
+		obj.funcPositionValidation = obj.__IsValisPosition;
+
 		return obj;
 	}
 
 	static public Furniture PlaceInstance( Furniture proto, Tile tile ) {
+		if (proto.funcPositionValidation (tile) == false) {
+			Debug.LogError ("placeInstance -- Position Validity Function returned FALSE");
+			return null;
+		}
+
+		//we know our placement destination is valid
+
 		Furniture obj = new Furniture ();
 
 		obj.objectType = proto.objectType;
@@ -112,4 +124,31 @@ public class Furniture {
 		cbOnChanged -= callbackFunc;
 	}
 
+	public bool IsValidPosition(Tile t){
+		return funcPositionValidation (t);
+	}
+
+	// FIXME these fuctions should never be called directly
+	//so souldh'ht be public fucntion furniture
+	public bool __IsValisPosition(Tile t){
+		//make sure tile is floor
+		if( t.Type != TileType.Floor ) {
+			return false;
+		}
+	
+		//make sure tile does'nt already have furniture
+		if (t.furniture != null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public bool __IsValidPosition_Door(Tile t)  {
+		if (__IsValisPosition (t) == false)
+			return false;
+		//make sure we have a pair of E/W or N/S walls
+
+		return true;
+	}
 }
