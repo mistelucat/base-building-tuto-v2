@@ -1,15 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Path_node : MonoBehaviour {
+public class Path_Node<T> {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	//on intitlise T parce que c'est une convention
+	public T data;
+
+	public Path_Edge<T>[] edges; //nodes leading OUT from this node
+
 }

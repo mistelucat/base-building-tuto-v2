@@ -4,12 +4,15 @@ using System;
 
 //world est le méta script des autres script, c'est le king BB !
 
-public class World {
+public class World   {
 
 	Tile[,] tiles;
 
 	//on créé une liste d  charaters de la classe character !!!
 	List<Character> characters;
+
+	//The pathfinding graph uised to navigate our world map
+	public Path_TileGraph tileGraph;
 
 	Dictionary<string, Furniture> furniturePrototypes;
 
@@ -104,11 +107,11 @@ public class World {
 	public void SetupPathFindingExample() {
 		Debug.Log ("SetuPathFindingExample");
 		//make a set of floor walls to test pathfinding with
-		int l=Width / 2-5;
+		int l=Width / 2 - 5;
 		int b = Height / 2 - 5;
 
 		for (int x = l - 5; x < l + 15; x++) {
-			for (int y = b - 5; x < b + 15; x++) {
+			for (int y = b - 5; y < b + 15; y++) {
 				tiles [x, y].Type = TileType.Floor;
 
 				if (x == l || x == (l + 9) || y == b || y == (b + 9)) {
@@ -151,6 +154,7 @@ public class World {
 
 		if (cbFurnitureCreated != null) {
 			cbFurnitureCreated (obj);
+			InvalidateTileGraph ();
 		}
 	}
 	public void RegisterFurnitureCreated (Action<Furniture> callbackfunc) {
@@ -176,11 +180,18 @@ public class World {
 		cbTileChanged -= callbackfunc;
 	}
 
+	//get called whenever any tile changes
 	void OnTileChanged(Tile t) {
 		if (cbTileChanged == null)
 			return;
 		
 		cbTileChanged (t);
+		InvalidateTileGraph ();
+	}
+
+	//this shound be calles whenever a change to the world means that our old pathfinding info is invalid
+	public void InvalidateTileGraph(){
+		tileGraph = null;
 	}
 
 	public bool IsFurniturePlacementValid(string furnitureType, Tile t) {

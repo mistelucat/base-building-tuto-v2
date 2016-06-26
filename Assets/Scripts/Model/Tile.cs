@@ -31,6 +31,16 @@ public class Tile {
 	public int X { get; protected set; }
 	public int Y { get; protected set; }
 
+	public float movementCost {
+		get{
+			if (Type == TileType.Empty)
+				return 0; //0 is unwalkable
+			if (furniture == null)
+				return 1;
+
+			return 1 * furniture.movementCost;
+		}
+	}
 	//la fonction qu'on appelle à chaque fois que notre data de tile change !
 	//cb=callback the function we callback anytime our tile data changes
 	//c'est super puissant mec, action instance ? similaire void method
@@ -100,11 +110,44 @@ public class Tile {
 				return true;
 			if (this.X == tile.X - 1 && (this.Y == tile.Y + 1 || this.Y == tile.Y-1 ))
 				return true;
-
 		}
-
 		return false;
 	}
 
+
+	public Tile[] GetNeighbours(bool diagOkay = false){
+
+		Tile[] ns;
+
+		if (diagOkay == false) {
+			ns = new Tile[4]; //Tile order : N E S W
+		} else {
+			ns = new Tile[8]; // Tile order N E S W NE SE SW NW
+		}
+
+		Tile n;
+		n = world.GetTileAt (X, Y + 1);
+		ns [0] = n; //Could be null, but that's okay !
+		n = world.GetTileAt (X+1, Y);
+		ns [1] = n;
+		n = world.GetTileAt (X, Y - 1);
+		ns [2] = n;
+		n = world.GetTileAt (X-1, Y);
+		ns [3] = n;
+
+		if (diagOkay == true) {
+			n = world.GetTileAt (X+1, Y + 1);
+			ns [4] = n; //Could be null, but that's okay !
+			n = world.GetTileAt (X+1, Y-1);
+			ns [5] = n;
+			n = world.GetTileAt (X-1, Y - 1);
+			ns [6] = n;
+			n = world.GetTileAt (X-1, Y+1);
+			ns [7] = n;
+
+		}
+		//and finally return the neighbours
+		return ns;
+	}
 
 }

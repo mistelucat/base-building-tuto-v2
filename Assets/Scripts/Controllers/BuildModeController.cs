@@ -31,6 +31,10 @@ public class BuildModeController : MonoBehaviour {
 		buildModeObjectType = objectType;
 	}
 
+	public void DoPathfindingTest() {
+		WorldController.Instance.world.SetupPathFindingExample();
+	}
+
 	public void DoBuild(Tile t){
 		if (buildModeIsObjects == true) {
 			//create the InstalledObject and assigh it to the tile

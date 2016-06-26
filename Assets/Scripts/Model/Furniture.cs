@@ -19,7 +19,7 @@ public class Furniture {
 	//for example a rough tile (cost of 2) with a table (cost of 3) that is on fire (cost of 3) 
 	// would have a total movement cost of (2+3+3 = 8), so you woud move through this tile at 1/8th normal speed
 	//SPECIAL if movementCost = 0 then this tile is impassible (like WAAAAAAAAAALLLLL)
-	float movementCost;
+	public float movementCost { get; protected set;}
 
 	//for example, a sofa might be 3x2 
 	int width;
