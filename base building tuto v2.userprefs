@@ -1,13 +1,14 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj" RefactoringSettings.EnableRefactorings="True">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Controllers\JobSpriteController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Model\Job.cs">
     <Files>
-      <File FileName="Assets\Controllers\JobSpriteController.cs" Line="43" Column="2" />
-      <File FileName="Assets\Controllers\BuildModeController.cs" Line="61" Column="5" />
-      <File FileName="Assets\Model\JobQueue.cs" Line="15" Column="2" />
-      <File FileName="Assets\Model\World.cs" Line="143" Column="4" />
-      <File FileName="Assets\Controllers\FurnitureSpriteController.cs" Line="131" Column="54" />
-      <File FileName="Assets\Model\Job.cs" Line="50" Column="3" />
+      <File FileName="Assets\Model\Character.cs" Line="73" Column="101" />
+      <File FileName="Assets\Model\World.cs" Line="63" Column="13" />
+      <File FileName="Assets\Controllers\WorldController.cs" Line="34" Column="62" />
+      <File FileName="Assets\Controllers\CharacterSpriteController.cs" Line="27" Column="10" />
+      <File FileName="Assets\Model\JobQueue.cs" Line="27" Column="3" />
+      <File FileName="Assets\Model\Tile.cs" Line="85" Column="3" />
+      <File FileName="Assets\Model\Job.cs" Line="30" Column="76" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -45,21 +45,31 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Controllers\BuildModeController.cs" />
-     <Compile Include="Assets\Controllers\FurnitureSpriteController.cs" />
-     <Compile Include="Assets\Controllers\JobSpriteController.cs" />
-     <Compile Include="Assets\Controllers\MouseController.cs" />
-     <Compile Include="Assets\Controllers\SoundController.cs" />
-     <Compile Include="Assets\Controllers\TileSpriteController.cs" />
-     <Compile Include="Assets\Controllers\WorldController.cs" />
-     <Compile Include="Assets\Model\Furniture.cs" />
-     <Compile Include="Assets\Model\Inventory.cs" />
-     <Compile Include="Assets\Model\Job.cs" />
-     <Compile Include="Assets\Model\JobQueue.cs" />
-     <Compile Include="Assets\Model\Tile.cs" />
-     <Compile Include="Assets\Model\World.cs" />
+     <Compile Include="Assets\Scripts\Controllers\BuildModeController.cs" />
+     <Compile Include="Assets\Scripts\Controllers\CharacterSpriteController.cs" />
+     <Compile Include="Assets\Scripts\Controllers\FurnitureSpriteController.cs" />
+     <Compile Include="Assets\Scripts\Controllers\JobSpriteController.cs" />
+     <Compile Include="Assets\Scripts\Controllers\MouseController.cs" />
+     <Compile Include="Assets\Scripts\Controllers\SoundController.cs" />
+     <Compile Include="Assets\Scripts\Controllers\TileSpriteController.cs" />
+     <Compile Include="Assets\Scripts\Controllers\WorldController.cs" />
+     <Compile Include="Assets\Scripts\Model\Character.cs" />
+     <Compile Include="Assets\Scripts\Model\Furniture.cs" />
+     <Compile Include="Assets\Scripts\Model\Inventory.cs" />
+     <Compile Include="Assets\Scripts\Model\Job.cs" />
+     <Compile Include="Assets\Scripts\Model\JobQueue.cs" />
+     <Compile Include="Assets\Scripts\Model\Tile.cs" />
+     <Compile Include="Assets\Scripts\Model\World.cs" />
+     <Compile Include="Assets\Scripts\Pathfinding\Path_Edge.cs" />
+     <Compile Include="Assets\Scripts\Pathfinding\Path_TileGraph.cs" />
+     <Compile Include="Assets\Scripts\Pathfinding\Path_node.cs" />
+     <Compile Include="Assets\Scripts\Utilities\Priority Queue\FastPriorityQueue.cs" />
+     <Compile Include="Assets\Scripts\Utilities\Priority Queue\FastPriorityQueueNode.cs" />
+     <Compile Include="Assets\Scripts\Utilities\Priority Queue\IPriorityQueue.cs" />
+     <Compile Include="Assets\Scripts\Utilities\Priority Queue\Properties\AssemblyInfo.cs" />
+     <Compile Include="Assets\Scripts\Utilities\Priority Queue\SimplePriorityQueue.cs" />
+     <Compile Include="Assets\Scripts\Utilities\SimplePool.cs" />
      <Compile Include="Assets\UI\AutomaticVerticalSize.cs" />
-     <Compile Include="Assets\Utilities\SimplePool.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>G:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
