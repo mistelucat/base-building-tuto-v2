@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{01E1B6CE-C683-3123-68A4-05B613737514}</ProjectGuid>
+    <ProjectGuid>{03AAA9F3-D011-A171-EEE0-44C23105531C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -38,10 +38,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UnityEngine">
-      <HintPath>G:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+      <HintPath>D:/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor">
-      <HintPath>G:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+      <HintPath>D:/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -62,8 +62,8 @@
      <Compile Include="Assets\Scripts\Model\World.cs" />
      <Compile Include="Assets\Scripts\Pathfinding\Path_AStar.cs" />
      <Compile Include="Assets\Scripts\Pathfinding\Path_Edge.cs" />
-     <Compile Include="Assets\Scripts\Pathfinding\Path_Node.cs" />
      <Compile Include="Assets\Scripts\Pathfinding\Path_TileGraph.cs" />
+     <Compile Include="Assets\Scripts\Pathfinding\Path_node.cs" />
      <Compile Include="Assets\Scripts\Utilities\Priority Queue\FastPriorityQueue.cs" />
      <Compile Include="Assets\Scripts\Utilities\Priority Queue\FastPriorityQueueNode.cs" />
      <Compile Include="Assets\Scripts\Utilities\Priority Queue\IPriorityQueue.cs" />
@@ -72,10 +72,10 @@
      <Compile Include="Assets\Scripts\Utilities\SimplePool.cs" />
      <Compile Include="Assets\UI\AutomaticVerticalSize.cs" />
  <Reference Include="UnityEngine.UI">
- <HintPath>G:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.Networking">
- <HintPath>G:/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ <HintPath>D:/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

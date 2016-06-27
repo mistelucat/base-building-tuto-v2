@@ -125,8 +125,8 @@ public class World   {
 
 
 	public Tile GetTileAt(int x, int y)  {
-		if( x > Width || x < 0 || y > Height || y < 0 ) {
-			Debug.LogError("tile ("+x+" , "+y+") is out of raaange.");
+		if( x >= Width || x < 0 || y >= Height || y < 0 ) {
+			//Debug.LogError("tile ("+x+" , "+y+") is out of raaange.");
 				return null;
 				}
 		return tiles[x, y];
@@ -136,7 +136,7 @@ public class World   {
 	//on créé la fonction pour mettre des installedobjects !
 
 	public void PlaceFurniture(string objectType, Tile t) {
-		Debug.Log("PlaceInstalledObject");
+		//Debug.Log("PlaceInstalledObject");
 		//TODO this function assumes 1x1 tiles only and no rotation
 
 

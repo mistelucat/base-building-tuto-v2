@@ -27,7 +27,7 @@ public class Job {
 
 	//on fait un public constructor de job
 	//on décide du temps de base pour réaliser le job est de 1s
-	public Job ( Tile tile, string jobObjectType, Action<Job> cbJobComplete, float jobTime = 1f ) {
+	public Job ( Tile tile, string jobObjectType, Action<Job> cbJobComplete, float jobTime = 0.1f ) {
 		this.tile = tile;
 		this.jobObjectType = jobObjectType;
 		this.cbJobComplete += cbJobComplete;
