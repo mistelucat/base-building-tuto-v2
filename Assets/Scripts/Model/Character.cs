@@ -29,7 +29,7 @@ public class Character {
 	Path_AStar pathAStar;
 	float movementPercentage; //Goes from 0 to 1 as we move from currTile to dest
 
-	float speed = 2f; //Tiles per second
+	float speed = 5f; //Tiles per second
 
 	Action<Character> cbCharacterChanged; 
 
@@ -62,14 +62,12 @@ public class Character {
 
 
 		//are we there yet?
-		if (currTile == destTile) {
+		if (myJob != null && currTile == myJob.tile) {
 		//if (pathAStar != null && pathAStar.Length() == 1) { //we are adjacent to the job site
 			if (myJob != null) {
 				myJob.DoWork (deltaTime);
 			}
-		
 		}
-
 	}
 
 	public void AbandonJob(){
@@ -120,7 +118,7 @@ public class Character {
 		//public static float Pow(float f, float p);
 		//Returns f raised to power p.
 		//public static float Sqrt(float f); -- Returns square root of f.
-		float distToTravel = Mathf.Sqrt(Mathf.Pow(currTile.X-destTile.X, 2) +  Mathf.Pow(currTile.Y-destTile.Y, 2));
+		float distToTravel = Mathf.Sqrt(Mathf.Pow(currTile.X-nextTile.X, 2) +  Mathf.Pow(currTile.Y-nextTile.Y, 2));
 
 		//on détermine la distance par frame pour qu'elle soit égale quelque que soit le nombre de fps
 		//how much distance can be traveled this update

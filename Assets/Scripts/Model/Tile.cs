@@ -114,6 +114,7 @@ public class Tile {
 		return false;
 	}
 
+	//diagOkay is diagonal movement okay ?
 
 	public Tile[] GetNeighbours(bool diagOkay = false){
 

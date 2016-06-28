@@ -2,6 +2,9 @@
 using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+using System.Xml.Serialization;
+using System.IO;
 
 
 public class WorldController : MonoBehaviour {
@@ -14,6 +17,9 @@ public class WorldController : MonoBehaviour {
 	//world et tile data qui peut être acess, mais pas modifie
 	public World world { get; protected set; }
 
+	//static = belong to the class and not the instance of worldcontroller
+	//kinda global parameter
+	static bool loadWorld = false;
 
 	// Use this for initialization
 	//on utilise OnEnable pour qu'il s'exécute en PREMIER, avant start
@@ -23,12 +29,13 @@ public class WorldController : MonoBehaviour {
 		}
 		Instance = this;
 
-	//créé le monde vide empty tiles
-		world = new World ();
-
-		//center the camera
-		Camera.main.transform.position = new Vector3(world.Width/2, world.Height/2, Camera.main.transform.position.z );
-
+		if (loadWorld) {
+			loadWorld = false;
+			CreateWorldFromSaveFile ();
+		} 
+		else {
+			CreateEmptyWorld ();
+		}
 	}
 		
 	//ici on fait le liens entre l'update de la classe world, qui est NOTRE update, et l'update de unity, parce que ici on est en monobeaviour
@@ -52,6 +59,49 @@ public class WorldController : MonoBehaviour {
 
 
 		return world.GetTileAt(x, y);
+	}
+	public void NewWorld(){
+		Debug.Log ("NewWorld button was clicked you silly");
+		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
+	}
+
+	public void SaveWorld(){
+		Debug.Log ("save world button was clicked");
+
+		//turn an object into Xml
+		XmlSerializer serializer = new XmlSerializer (typeof(World));
+		//write that somewhere, actualling in memory
+		TextWriter writer = new StringWriter();
+		serializer.Serialize (writer, world);
+		writer.Close ();
+
+		Debug.Log(writer.ToString());
+	}
+
+	public void LoadWorld(){
+		Debug.Log ("load world button was clicked");
+		//reload the scene to reset all data(and purge old references) 
+		loadWorld = true;
+		SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
+	}
+
+	void CreateEmptyWorld(){
+		//créé le monde vide empty tiles
+		world = new World (100, 100);
+
+		//center the camera
+		Camera.main.transform.position = new Vector3(world.Width/2, world.Height/2, Camera.main.transform.position.z );
+
+	}
+
+	void CreateWorldFromSaveFile(){
+		Debug.Log ("CreateWorldFromSaveFile");
+		//créé le monde vide empty tiles
+		world = new World ();
+
+		//center the camera
+		Camera.main.transform.position = new Vector3(world.Width/2, world.Height/2, Camera.main.transform.position.z );
+
 	}
 }
 	
