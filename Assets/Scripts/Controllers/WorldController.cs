@@ -76,6 +76,9 @@ public class WorldController : MonoBehaviour {
 		writer.Close ();
 
 		Debug.Log(writer.ToString());
+
+		PlayerPrefs.SetString("SaveGame00", writer.ToString());
+
 	}
 
 	public void LoadWorld(){
@@ -96,8 +99,14 @@ public class WorldController : MonoBehaviour {
 
 	void CreateWorldFromSaveFile(){
 		Debug.Log ("CreateWorldFromSaveFile");
-		//créé le monde vide empty tiles
-		world = new World ();
+		//créé le monde from our save file daga
+
+
+		XmlSerializer serializer = new XmlSerializer (typeof(World));
+		TextReader reader = new StringReader (PlayerPrefs.GetString ("SaveGame00"));
+		Debug.Log(reader.ToString());
+		world = (World)serializer.Deserialize (reader);
+		reader.Close ();
 
 		//center the camera
 		Camera.main.transform.position = new Vector3(world.Width/2, world.Height/2, Camera.main.transform.position.z );

@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 
 
 //TileType is the base type to the tile.
 public enum TileType { Empty, Floor };
 
-public class Tile {
+public class Tile : IXmlSerializable {
 	private TileType _type = TileType.Empty;
 	public TileType Type {
 		get { return _type; }
@@ -151,4 +154,34 @@ public class Tile {
 		return ns;
 	}
 
+
+
+	///////////////////////////////////////////////////////////////////////////////
+	/// 
+	/// 							SAVING & LOADING
+	/// 
+	///////////////////////////////////////////////////////////////////////////////
+
+
+
+	public XmlSchema GetSchema(){
+		return null;
+	}
+
+	public void WriteXml(XmlWriter writer){
+		writer.WriteAttributeString("X", X.ToString());
+		writer.WriteAttributeString("Y", Y.ToString());
+		writer.WriteAttributeString ("Type", ((int)Type).ToString());
+	}
+
+	public void ReadXml(XmlReader reader){
+
+		reader.MoveToAttribute ("X");
+		X = reader.ReadContentAsInt ();
+		reader.MoveToAttribute ("Y");
+		Y = reader.ReadContentAsInt ();
+		reader.MoveToAttribute ("Type");
+		Type = (TileType)reader.ReadContentAsInt();
+
+	}
 }
